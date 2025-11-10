@@ -1,0 +1,22 @@
+{
+  "name": "report.md",
+  "title": "Write a markdown report",
+  "description": "Create a markdown report from metrics and notes",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "title": { "type": "string" },
+      "notes": { "type": "array", "items": { "type": "string" } },
+      "metrics_json": { "type": "string" },
+      "links": { "type": "array", "items": { "type": "object" } }
+    },
+    "required": ["title","notes","metrics_json"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "report_path": { "type": "string" }
+    },
+    "required": ["report_path"]
+  }
+}
