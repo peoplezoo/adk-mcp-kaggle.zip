@@ -1,0 +1,21 @@
+{
+  "name": "web_fetch",
+  "title": "Fetch and normalize a web page",
+  "description": "GET a URL; return markdown or metadata",
+  "inputSchema": {
+    "type": "object",
+    "properties": { "url": { "type": "string" }, "timeout_sec": { "type": "integer", "default": 20 } },
+    "required": ["url"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "status": { "type": "integer" },
+      "title": { "type": ["string", "null"] },
+      "markdown": { "type": ["string", "null"] },
+      "headers": { "type": "object" },
+      "url": { "type": "string" }
+    },
+    "required": ["status", "url"]
+  }
+}

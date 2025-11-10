@@ -1,0 +1,20 @@
+{
+  "name": "tabular.baseline",
+  "title": "Train a simple baseline",
+  "description": "Ridge (regression) or LogisticRegression (classification)",
+  "inputSchema": {
+    "type": "object",
+    "properties": { "cache_feather": { "type": "string" }, "cv_path": { "type": "string" }, "task": { "type": "string", "default": "auto" } },
+    "required": ["cache_feather","cv_path"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "task": { "type": "string" },
+      "fold_metrics": { "type": "array" },
+      "metrics_path": { "type": "string" },
+      "oof_path": { "type": "string" }
+    },
+    "required": ["task","fold_metrics"]
+  }
+}
