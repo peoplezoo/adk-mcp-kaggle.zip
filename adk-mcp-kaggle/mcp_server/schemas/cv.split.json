@@ -1,0 +1,18 @@
+{
+  "name": "cv.split",
+  "title": "Create CV folds JSON",
+  "description": "Stratified or KFold splits for cached feather",
+  "inputSchema": {
+    "type": "object",
+    "properties": { "cache_feather": { "type": "string" }, "target_col": { "type": "string" }, "n_splits": { "type": "integer", "default": 5 }, "stratified": { "type": "boolean", "default": true } },
+    "required": ["cache_feather","target_col"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "cv_path": { "type": "string" },
+      "summary": { "type": "array" }
+    },
+    "required": ["cv_path"]
+  }
+}

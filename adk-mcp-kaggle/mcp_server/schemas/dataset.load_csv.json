@@ -1,0 +1,19 @@
+{
+  "name": "dataset.load_csv",
+  "title": "Load Kaggle CSV and cache feather",
+  "description": "Load CSV in /kaggle/input/<dataset>/<file>",
+  "inputSchema": {
+    "type": "object",
+    "properties": { "dataset": { "type": "string" }, "filename": { "type": "string" }, "nrows": { "type": ["integer","null"] } },
+    "required": ["dataset","filename"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "meta": { "type": "object" },
+      "head": { "type": "object" },
+      "cache_feather": { "type": "string" }
+    },
+    "required": ["meta"]
+  }
+}
