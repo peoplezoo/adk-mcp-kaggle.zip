@@ -9,3 +9,5 @@ scikit-learn
 lxml
 beautifulsoup4
 orjson
+pyyaml
+pyarrow

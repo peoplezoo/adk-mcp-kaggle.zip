@@ -1,40 +1,43 @@
+"""FastAPI server exposing the tool registry over MCP."""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Dict
+
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import Dict, Any
-import json, importlib
-from pathlib import Path
+
+from adk_app.tools import get_mcp_tools, load_allowlist
 
 app = FastAPI()
 SCHEMAS = Path(__file__).parent / "schemas"
 
-# Map MCP tool names → ADK tool implementations
-TOOL_IMPLS = {
-    "web_fetch": ("adk_app.tools.web_fetch", "web_fetch"),
-    "dataset.load_csv": ("adk_app.tools.dataset_tools", "dataset_load_csv"),
-    "cv.split": ("adk_app.tools.cv_tools", "cv_split"),
-    "tabular.baseline": ("adk_app.tools.baseline_tools", "tabular_baseline"),
-    "report.md": ("adk_app.tools.report_tools", "report_md"),
-}
+allowlist = load_allowlist()
+MCP_TOOLS = get_mcp_tools(allowlist)
+
 
 class MCPCall(BaseModel):
     name: str
     arguments: Dict[str, Any] = {}
 
+
 @app.get("/mcp/tools")
 def list_tools():
     tools = []
-    for p in SCHEMAS.glob("*.json"):
-        tools.append(json.loads(p.read_text()))
+    for schema_file in SCHEMAS.glob("*.json"):
+        schema = json.loads(schema_file.read_text())
+        if schema.get("name") in MCP_TOOLS:
+            tools.append(schema)
     return {"tools": tools}
+
 
 @app.post("/mcp/call")
 def call_tool(inp: MCPCall):
-    if inp.name not in TOOL_IMPLS:
+    if inp.name not in MCP_TOOLS:
         return {"isError": True, "message": f"unknown tool {inp.name}"}
-    mod_name, fn_name = TOOL_IMPLS[inp.name]
-    mod = importlib.import_module(mod_name)
-    fn = getattr(mod, fn_name)
+    tool_fn = MCP_TOOLS[inp.name]
     try:
-        return fn(**(inp.arguments or {}))
-    except Exception as e:
-        return {"isError": True, "message": str(e)}
+        return tool_fn(**(inp.arguments or {}))
+    except Exception as exc:  # pragma: no cover - safety net
+        return {"isError": True, "message": str(exc)}
